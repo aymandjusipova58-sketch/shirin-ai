@@ -44,6 +44,11 @@ jobs:
           mkdir -p www/assets
           cp index.html app.js question-bank.js curriculum.js styles.css config.js manifest.webmanifest www/
           cp -R assets/. www/assets/
+      - name: Validate JavaScript syntax
+        run: |
+          node --check app.js
+          node --check question-bank.js
+          node --check curriculum.js
       - name: Install app dependencies
         run: npm install
       - name: Add Android platform
