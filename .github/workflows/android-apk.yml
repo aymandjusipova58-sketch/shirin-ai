@@ -6,6 +6,8 @@ on:
     paths:
       - 'index.html'
       - 'app.js'
+      - 'question-bank.js'
+      - 'curriculum.js'
       - 'styles.css'
       - 'config.js'
       - 'manifest.webmanifest'
