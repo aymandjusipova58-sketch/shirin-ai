@@ -7,7 +7,7 @@
     economics: "Political Economy", tutor: "AI Ustoz", progress: "O‘quv natijalari"
   };
   const taskNames = { english: "English Foundation", math: "Mathematics", thinking: "Critical Thinking" };
-  const storageKey = "shirin-ai-progress-v1";
+  const storageKey = "shirin-ai-progress-v2";
   const safeRead = () => {
     try {
       const parsed = JSON.parse(localStorage.getItem(storageKey) || "{}");
@@ -173,7 +173,7 @@
       tutorStep = 1;
       return "Albatta! " + lesson.title + "\\n\\n" + lesson.intro + "\\n\\n" + lesson.examples + "\\n\\n" + lesson.question;
     }
-    return "Savolingni tushunishga harakat qilaman. Hozir men English, matematika, SAT, Government va Political Economy bo‘yicha bosqichli darslar bera olaman. Qaysi mavzuni o‘rganmoqchisan? Masalan: “English — to be” yoki “x + 5 = 9”.";
+    return "Savolingni oldim. Uni aniqroq tushunishim uchun qaysi fan bilan bog‘liqligini yoz: English, Math, SAT, Government yoki Political Economy. Masalan, “kambag‘allik sabablari”, “kvadrat tenglama” yoki “demokratiya nima?”";
   }
   const config = window.SHIRIN_CONFIG || {};
   let firebaseReady = false;
@@ -214,7 +214,7 @@
       const response = await fetch(config.tutorEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, history: tutorHistory.slice(-8) })
+        body: JSON.stringify({ message, history: tutorHistory.slice(0, -1).slice(-8) })
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.answer) throw new Error(data.error || "AI xizmatidan javob kelmadi.");
