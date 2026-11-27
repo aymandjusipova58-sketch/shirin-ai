@@ -80,39 +80,20 @@
     });
   });
   const quizData = window.SHIRIN_QUESTION_BANK || {};
-  $$("[data-quiz]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const bank = quizData[button.dataset.quiz];
-      if (!Array.isArray(bank) || !bank.length) { toast("Bu fan uchun savollar topilmadi."); return; }
-      const quiz = bank[Math.floor(Math.random() * bank.length)];
-      const [question, options, answerIndex, explanation] = quiz;
-      const choice = window.prompt(question + "\\n\\nA) " + options[0] + "\\nB) " + options[1] + "\\nC) " + options[2] + "\\n\\nA, B yoki C javobini yozing.");
-      if (choice === null) return;
-      const index = ({ A: 0, B: 1, C: 2 })[choice.trim().toUpperCase()];
-      if (index === undefined) { toast("A, B yoki C javobidan birini kiriting."); return; }
-      const correct = index === answerIndex;
-      progress.quizScores = progress.quizScores || {};
-      const previous = progress.quizScores[button.dataset.quiz] || { attempts: 0, correctCount: 0 };
-      const attempts = (previous.attempts || 0) + 1;
-      const correctCount = (previous.correctCount || 0) + (correct ? 1 : 0);
-      progress.quizScores[button.dataset.quiz] = { correct, answer: options[answerIndex], attempts, correctCount, at: new Date().toISOString() };
-      save();
-      toast((correct ? "To‘g‘ri! " : "To‘g‘ri javob: " + options[answerIndex] + ". ") + explanation + " (" + correctCount + "/" + attempts + " to‘g‘ri)");
-    });
-  });
+  $$("[data-quiz]").forEach((button) => { button.addEventListener("click", () => startFullPractice(button.dataset.quiz)); });
 
   function renderCurriculum() {
     const curriculum = window.SHIRIN_CURRICULUM || {};
-    [["english", "englishCurriculum"], ["math", "mathCurriculum"]].forEach(([subject, targetId]) => {
+    [["english","englishCurriculum"],["math","mathCurriculum"],["sat","satCurriculum"],["government","governmentCurriculum"],["economics","economicsCurriculum"]].forEach(([subject, targetId]) => {
       const target = document.getElementById(targetId);
       if (!target || !Array.isArray(curriculum[subject])) return;
-      target.innerHTML = '<div class="curriculum-heading"><span class="lesson-label">KUNLIK DARS REJASI</span><b>20 daqiqa dars + 10 daqiqa uyga vazifa</b><small>Har mavzuda tushuntirish, takrorlash, bilim o‘yini va 50 ta mashq.</small></div>' +
+      target.innerHTML = '<div class="curriculum-heading"><span class="lesson-label">KUNLIK DARS REJASI</span><b>20 daqiqa dars + 10 daqiqa uyga vazifa</b><small>Har mavzuda dars, uyga vazifa, takrorlash, bilim o‘yini va ' + (quizData[subject] || []).length + ' ta savol.</small></div>' +
         curriculum[subject].map((lesson, index) => {
           const key = subject + "-" + index;
           const done = progress.completedLessons && progress.completedLessons[key];
           return '<details class="curriculum-card"><summary><span class="curriculum-number">' + (index + 1) + '</span><span><b>' + lesson.title + '</b><small>' + lesson.time + (done ? ' • Bajarildi ✓' : '') + '</small></span><span class="curriculum-chevron">＋</span></summary>' +
             '<div class="curriculum-body"><h4>📘 20 daqiqalik dars</h4><p>' + lesson.lesson + '</p><h4>📝 10 daqiqalik uyga vazifa</h4><p>' + lesson.homework + '</p><h4>🔁 Takrorlash</h4><p>' + lesson.review + '</p><h4>🎮 Bilimni mustahkamlash o‘yini</h4><p>' + lesson.game + '</p>' +
-            '<div class="curriculum-actions"><button type="button" class="secondary-btn curriculum-practice" data-subject="' + subject + '">50 ta mashqni boshlash</button><button type="button" class="secondary-btn curriculum-done" data-lesson="' + key + '">Darsni tugatdim ✓</button></div></div></details>';
+            '<div class="curriculum-actions"><button type="button" class="secondary-btn curriculum-practice" data-subject="' + subject + '">' + (quizData[subject] || []).length + ' ta mashqni boshlash</button><button type="button" class="secondary-btn curriculum-done" data-lesson="' + key + '">Darsni tugatdim ✓</button></div></div></details>';
         }).join("");
     });
   }
@@ -158,7 +139,7 @@
     const session = practiceSession;
     if (!modal || !session) return;
     const [question, options, answerIndex, explanation] = session.questions[session.index];
-    modal.querySelector("#practiceTitle").textContent = session.subject === "english" ? "English mashqi" : "Matematika mashqi";
+    modal.querySelector("#practiceTitle").textContent = ({english:"English",math:"Matematika",sat:"SAT",government:"Government",economics:"Political Economy"}[session.subject] || "Fan") + " mashqi";
     modal.querySelector("#practiceMeta").textContent = "Savol " + (session.index + 1) + " / " + session.questions.length + " • To‘g‘ri: " + session.score;
     modal.querySelector("#practiceProgressFill").style.width = ((session.index) / session.questions.length * 100) + "%";
     modal.querySelector("#practiceQuestion").textContent = question;
