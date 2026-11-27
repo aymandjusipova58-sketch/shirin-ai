@@ -106,7 +106,7 @@
       if (cachedToken) { accessToken = cachedToken; return accessToken; }
     } catch { /* Private browsing may disable session storage; continue with a new session. */ }
     if (!config.supabaseUrl || !config.supabaseAnonKey) return "";
-    const response = await fetch(config.supabaseUrl.replace(/\\/$/, "") + "/auth/v1/signup", {
+    const response = await fetch(config.supabaseUrl.replace(/\/+$/, "") + "/auth/v1/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json", "apikey": config.supabaseAnonKey },
       body: JSON.stringify({ data: { app: "shirin-ai" } })
@@ -122,7 +122,7 @@
     if (endpointReady) {
       const token = await getAnonymousSession();
       const response = await fetch(
-        config.supabaseUrl.replace(/\\/$/, "") + "/functions/v1/" + encodeURIComponent(config.tutorFunctionName),
+        config.supabaseUrl.replace(/\/+$/, "") + "/functions/v1/" + encodeURIComponent(config.tutorFunctionName),
         {
           method: "POST",
           headers: {
