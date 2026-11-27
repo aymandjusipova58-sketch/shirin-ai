@@ -1,6 +1,6 @@
 // Shirin AI tutor — Supabase Edge Function
 // Required secret: GEMINI_API_KEY
-// Optional secrets: GEMINI_MODEL (default gemini-2.5-flash), SHIRIN_ALLOWED_ORIGIN
+// Optional secrets: GEMINI_MODEL (default gemini-2.5-flash-lite), SHIRIN_ALLOWED_ORIGIN
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash";
