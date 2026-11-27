@@ -40,7 +40,7 @@ jobs:
       - name: Prepare web assets
         run: |
           mkdir -p www/assets
-          cp index.html app.js styles.css config.js manifest.webmanifest www/
+          cp index.html app.js question-bank.js styles.css config.js manifest.webmanifest www/
           cp -R assets/. www/assets/
       - name: Install app dependencies
         run: npm install
