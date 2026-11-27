@@ -89,15 +89,92 @@
       toast((correct ? "To‘g‘ri! " : "Hali to‘g‘ri emas. ") + quiz.explanation);
     });
   });
-  const tutorReplies = [
-    { terms: ["hello", "salom", "assalom"], reply: "Salom! Bugun English, matematika yoki SAT bo‘yicha kichik dars qilamiz. Qaysi mavzu kerak?" },
-    { terms: ["am", "is", "are", "to be"], reply: "“To be” hozirgi zamonda: I am, he/she/it is, you/we/they are. Misol: She is a student — U o‘quvchi." },
-    { terms: ["algebra", "tenglama", "x +", "matematika"], reply: "Algebrada noma’lum sonni harf bilan belgilaymiz. Masalan, x + 3 = 7 bo‘lsa, x = 7 − 3 = 4. Avval ikki tomonda bir xil amal bajarishni o‘rganamiz." },
-    { terms: ["sat"], reply: "SAT ikki bo‘limdan iborat: Reading and Writing hamda Math. Avval ingliz tili va algebra poydevorini mustahkamlaymiz, keyin vaqt bilan ishlash va test strategiyalariga o‘tamiz." },
-    { terms: ["government", "davlat", "siyosat"], reply: "Government davlat institutlari, qonunlar va ommaviy siyosatni o‘rganadi. Boshlash uchun savol: davlat budjeti cheklangan bo‘lsa, qaysi ijtimoiy muammoni birinchi hal qilish kerak va nima uchun?" },
-    { terms: ["econom", "iqtisod", "poverty", "kambag"], reply: "Political Economy siyosiy qarorlar va iqtisodiyotning jamiyatga ta’sirini o‘rganadi. Masalan, kambag‘allikni tahlil qilishda daromad, ta’lim, ish o‘rinlari va davlat siyosatini birga ko‘ramiz." }
-  ];
   const tutorHistory = [];
+  let tutorStep = 0;
+  let tutorTopic = "english";
+  const tutorLessons = {
+    english: {
+      title: "To be: am / is / are",
+      intro: "“To be” fe’li “bo‘lmoq” ma’nosini beradi. Hozirgi zamonda uch shakli bor: am, is, are. I bilan am; he, she, it bilan is; you, we, they bilan are ishlatiladi.",
+      examples: "Misollar:\n• I am a student. — Men o‘quvchiman.\n• She is happy. — U xursand.\n• We are ready. — Biz tayyormiz.",
+      question: "Endi sen urinib ko‘r: “We ___ students.” Bo‘sh joyga am, is yoki are dan qaysi biri mos?",
+      answers: ["are"],
+      explain: "To‘g‘ri javob — are. We bilan are ishlatiladi: We are students."
+    },
+    math: {
+      title: "Tenglama: x + 3 = 7",
+      intro: "Tenglama — noma’lum qiymatni topish vazifasi. x + 3 = 7 da x ni yolg‘iz qoldirish uchun ikkala tomondan ham 3 ni ayiramiz.",
+      examples: "7 − 3 = 4, demak x = 4. Tekshirish: 4 + 3 = 7.",
+      question: "Mashq: x + 5 = 9 bo‘lsa, x nechaga teng? Faqat sonni yoz.",
+      answers: ["4"],
+      explain: "To‘g‘ri! 9 − 5 = 4. Tekshirish: 4 + 5 = 9."
+    },
+    sat: {
+      title: "SAT bilan tanishuv",
+      intro: "SAT ikki asosiy bo‘limdan iborat: Reading and Writing hamda Math. Tayyorgarlikni ingliz tili, algebra va matnni tahlil qilishdan boshlaymiz.",
+      examples: "Reading and Writing — matn, dalil, grammatika. Math — algebra, funksiyalar, geometriya va masalalar.",
+      question: "SAT Math bo‘limida qaysi fan ko‘nikmalari ko‘proq kerak bo‘ladi: algebra yoki tarix?",
+      answers: ["algebra"],
+      explain: "To‘g‘ri — algebra SAT Math uchun muhim asoslardan biri."
+    },
+    government: {
+      title: "Davlat va jamoat siyosati",
+      intro: "Government davlat institutlari, qonunlar va qarorlar qanday qabul qilinishini o‘rganadi. Public policy esa jamiyat muammolarini hal qilishga qaratilgan siyosat va dasturlarni tahlil qiladi.",
+      examples: "Masalan, ta’lim sifatini oshirish uchun budjet, o‘qituvchi tayyorlash va maktab infratuzilmasi birgalikda ko‘rib chiqiladi.",
+      question: "Seningcha, ta’lim sifatini oshirishda qaysi omil muhimroq? O‘z fikringni bir-ikki gapda yoz.",
+      answers: [],
+      explain: "Yaxshi tahlil! Fikringni dalil va misol bilan asoslashga harakat qil."
+    },
+    economics: {
+      title: "Political Economy asoslari",
+      intro: "Political Economy siyosiy qarorlar va iqtisodiyot o‘rtasidagi aloqani o‘rganadi. Davlat budjeti, ish o‘rinlari, ta’lim va kambag‘allik bir-biriga ta’sir qiladi.",
+      examples: "Masalan, kasb-hunar ta’limiga sarmoya kiritish odamlarning ish topish imkoniyatini oshirishi mumkin.",
+      question: "Kasbiy ta’limga sarmoya kiritish nima sababdan kambag‘allikni kamaytirishga yordam berishi mumkin?",
+      answers: [],
+      explain: "Mantiqli fikr. Kasbiy ko‘nikmalar ish topish va daromad olish imkoniyatlarini kengaytirishi mumkin."
+    }
+  };
+  const normalizeAnswer = (value) => value.toLowerCase().trim().replace(/[.!?,]/g, "");
+  function startTutorLesson(topic) {
+    tutorTopic = tutorLessons[topic] ? topic : "english";
+    tutorStep = 0;
+    const lesson = tutorLessons[tutorTopic];
+    appendBubble("Dars: " + lesson.title + "\\n\\n" + lesson.intro + "\\n\\n" + lesson.examples + "\\n\\n" + lesson.question, "tutor-bubble");
+    tutorStep = 1;
+  }
+  function respondTutor(message) {
+    const text = normalizeAnswer(message);
+    if (/^(salom|assalom|hello|hi)$/.test(text)) {
+      return "Salom! Men Shirin-AI o‘quv ustoziman. English, matematika, SAT, Government yoki Political Economy bo‘yicha yordam beraman. Qaysi mavzuni boshlaymiz?";
+    }
+    if (tutorStep === 1) {
+      const lesson = tutorLessons[tutorTopic];
+      if (lesson.answers.length === 0) {
+        tutorStep = 2;
+        return lesson.explain + "\\n\\nYana qaysi jihatini chuqurroq tushuntirib beray?";
+      }
+      if (lesson.answers.includes(text)) {
+        tutorStep = 2;
+        return "Barakalla! " + lesson.explain + "\\n\\nYana bitta mashq yoki boshqa mavzuni boshlashimiz mumkin.";
+      }
+      return "Hali to‘g‘ri emas. Shoshilma, misolga qaytamiz. " + lesson.explain + "\\n\\nYana bir marta urinib ko‘r: " + lesson.question;
+    }
+    const routes = [
+      { keys: ["english", "ingliz", "to be", "am", "is", "are", "grammar"], topic: "english" },
+      { keys: ["matematika", "algebra", "tenglama", "math"], topic: "math" },
+      { keys: ["sat"], topic: "sat" },
+      { keys: ["government", "davlat", "siyosat", "huquq"], topic: "government" },
+      { keys: ["econom", "iqtisod", "kambag", "poverty", "budjet"], topic: "economics" }
+    ];
+    const route = routes.find((item) => item.keys.some((key) => text.includes(key)));
+    if (route) {
+      const lesson = tutorLessons[route.topic];
+      tutorTopic = route.topic;
+      tutorStep = 0;
+      return "Albatta! " + lesson.title + "\\n\\n" + lesson.intro + "\\n\\n" + lesson.examples + "\\n\\n" + lesson.question;
+    }
+    return "Savolingni tushunishga harakat qilaman. Hozir men English, matematika, SAT, Government va Political Economy bo‘yicha bosqichli darslar bera olaman. Qaysi mavzuni o‘rganmoqchisan? Masalan: “English — to be” yoki “x + 5 = 9”.";
+  }
   const config = window.SHIRIN_CONFIG || {};
   let firebaseReady = false;
   let cloudUser = null;
@@ -143,9 +220,7 @@
       if (!response.ok || !data.answer) throw new Error(data.error || "AI xizmatidan javob kelmadi.");
       return data.answer;
     }
-    const lower = message.toLowerCase();
-    const match = tutorReplies.find((item) => item.terms.some((term) => lower.includes(term)));
-    return match ? match.reply : "Hozircha demo rejimidaman. Haqiqiy AI Ustoz serveri ulangach, savollaringizga kengroq javob beraman.";
+    return respondTutor(message);
   }
   $("#tutorForm")?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -162,12 +237,41 @@
       const reply = await askTutor(message);
       appendBubble(reply, "tutor-bubble");
       tutorHistory.push({ role: "model", text: reply });
+      if (window.speechSynthesis && $("#voiceReply")?.checked) speakTutor(reply);
     } catch (error) {
       appendBubble(error instanceof Error ? error.message : "Noma’lum xatolik yuz berdi.", "tutor-bubble");
     } finally {
       if (submit) submit.disabled = false;
       input.focus();
     }
+  });
+  function speakTutor(message) {
+    if (!("speechSynthesis" in window)) { toast("Bu brauzer ovozli javobni qo‘llamaydi."); return; }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "uz-UZ";
+    utterance.rate = 0.92;
+    window.speechSynthesis.speak(utterance);
+  }
+  $("#stopVoice")?.addEventListener("click", () => window.speechSynthesis?.cancel());
+  $("[data-tutor-topic]").forEach((button) => button.addEventListener("click", () => {
+    startTutorLesson(button.dataset.tutorTopic);
+  }));
+  $("#voiceInput")?.addEventListener("click", () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { toast("Ovozli kiritish bu brauzerda qo‘llanmaydi. Matn yozishingiz mumkin."); return; }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "uz-UZ";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      $("#tutorInput").value = transcript;
+      $("#tutorInput").focus();
+      toast("Ovoz matnga aylantirildi. Yuborish tugmasini bosing.");
+    };
+    recognition.onerror = () => toast("Ovoz aniqlanmadi. Qayta urinib ko‘ring yoki matn yozing.");
+    recognition.start();
   });
   function appendBubble(message, className) {
     const box = $("#chatMessages");
