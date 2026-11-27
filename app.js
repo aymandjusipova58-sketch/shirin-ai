@@ -96,17 +96,74 @@
     { terms: ["government", "davlat", "siyosat"], reply: "Government davlat institutlari, qonunlar va ommaviy siyosatni o‘rganadi. Boshlash uchun savol: davlat budjeti cheklangan bo‘lsa, qaysi ijtimoiy muammoni birinchi hal qilish kerak va nima uchun?" },
     { terms: ["econom", "iqtisod", "poverty", "kambag"], reply: "Political Economy siyosiy qarorlar va iqtisodiyotning jamiyatga ta’sirini o‘rganadi. Masalan, kambag‘allikni tahlil qilishda daromad, ta’lim, ish o‘rinlari va davlat siyosatini birga ko‘ramiz." }
   ];
-  $("#tutorForm")?.addEventListener("submit", (event) => {
+  const tutorHistory = [];
+  const config = window.SHIRIN_CONFIG || {};
+  let accessToken = "";
+  async function getAnonymousSession() {
+    if (accessToken) return accessToken;
+    const cached = safeRead();
+    if (typeof cached.authToken === "string" && cached.authToken) {
+      accessToken = cached.authToken;
+      return accessToken;
+    }
+    if (!config.supabaseUrl || !config.supabaseAnonKey) return "";
+    const response = await fetch(config.supabaseUrl.replace(/\\/$/, "") + "/auth/v1/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": config.supabaseAnonKey },
+      body: JSON.stringify({ data: { app: "shirin-ai" } })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.access_token) throw new Error("Anonim kirish yoqilmagan yoki Supabase sozlamasi noto‘g‘ri.");
+    accessToken = data.access_token;
+    progress.authToken = accessToken;
+    save();
+    return accessToken;
+  }
+  async function askTutor(message) {
+    const endpointReady = Boolean(config.supabaseUrl && config.supabaseAnonKey && config.tutorFunctionName);
+    if (endpointReady) {
+      const token = await getAnonymousSession();
+      const response = await fetch(
+        config.supabaseUrl.replace(/\\/$/, "") + "/functions/v1/" + encodeURIComponent(config.tutorFunctionName),
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": config.supabaseAnonKey,
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ message, history: tutorHistory.slice(-8) })
+        }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "AI xizmatidan javob kelmadi.");
+      return data.answer;
+    }
+    const lower = message.toLowerCase();
+    const match = tutorReplies.find((item) => item.terms.some((term) => lower.includes(term)));
+    return match ? match.reply : "Bu savol uchun hozircha tayyor demo javobim yo‘q. Haqiqiy AI Ustozni ulash uchun alohida Supabase loyihasi va serverdagi AI kaliti kerak bo‘ladi.";
+  }
+  $("#tutorForm")?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const input = $("#tutorInput");
     const message = input.value.trim();
     if (!message) return;
+    if (message.length > 2000) { toast("Savol 2000 belgidan oshmasin."); return; }
     appendBubble(message, "user-bubble");
+    tutorHistory.push({ role: "user", text: message });
     input.value = "";
-    const lower = message.toLowerCase();
-    const match = tutorReplies.find((item) => item.terms.some((term) => lower.includes(term)));
-    const reply = match ? match.reply : "Bu savol bo‘yicha hozir menda tayyor dars javobi yo‘q. Savolingni English, algebra, SAT, Government yoki Political Economy mavzusiga yaqinroq qilib yoz. To‘liq AI Ustoz ulanishi keyingi texnik bosqichda qo‘shiladi.";
-    window.setTimeout(() => appendBubble(reply, "tutor-bubble"), 250);
+    const submit = $('#tutorForm button[type="submit"]');
+    if (submit) submit.disabled = true;
+    try {
+      const reply = await askTutor(message);
+      appendBubble(reply, "tutor-bubble");
+      tutorHistory.push({ role: "model", text: reply });
+    } catch (error) {
+      appendBubble(error instanceof Error ? error.message : "Noma’lum xatolik yuz berdi.", "tutor-bubble");
+    } finally {
+      if (submit) submit.disabled = false;
+      input.focus();
+    }
   });
   function appendBubble(message, className) {
     const box = $("#chatMessages");
