@@ -12,6 +12,7 @@ on:
       - 'assets/**'
       - 'capacitor.config.json'
       - 'package.json'
+      - 'cloudflare/**'
       - '.github/workflows/android-apk.yml'
 
 permissions:
