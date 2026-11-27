@@ -34,14 +34,14 @@ A personalized learning companion for an 11th-grade student preparing for univer
 - Goal: prepare a competitive, realistic university application.
 
 ## Development roadmap
-- [ ] Responsive learning dashboard and navigation
+- [x] Responsive learning dashboard and navigation
 - [ ] Learner profile and baseline diagnostics
-- [ ] English Foundation lessons and quizzes
-- [ ] Mathematics Foundation lessons and quizzes
+- [x] English Foundation starter lesson and quiz
+- [x] Mathematics Foundation starter lesson and quiz
 - [ ] SAT diagnostic and structured preparation
 - [ ] Government & Political Economy learning path
 - [ ] AI tutor integration with safe server-side key handling
-- [ ] Progress tracking and weekly study planner
+- [x] Local progress tracking for daily tasks
 - [ ] Android packaging and device testing
 - [ ] Upload final app icon assets
 
