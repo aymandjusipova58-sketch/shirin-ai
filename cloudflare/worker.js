@@ -12,7 +12,8 @@ const allowedOrigins = new Set([
   "https://aymandjusipova58-sketch.github.io",
   "https://shirin-ai.pages.dev",
   "capacitor://localhost",
-  "http://localhost"
+  "http://localhost",
+  "https://localhost"
 ]);
 
 function headers(origin) {
