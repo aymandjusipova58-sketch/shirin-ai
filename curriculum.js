@@ -74,6 +74,19 @@
   for(let i=1;i<=10;i++){const a=i+12,b=i,v=a-b;m(`Solve: ${a} − ${b} = ?`,[String(v),String(v+2),String(v-1)],0,`${a} − ${b} = ${v}.`);}
   for(let i=1;i<=10;i++){const a=i+1,b=2,v=a*b;m(`Solve: ${a} × ${b} = ?`,[String(v+2),String(v),String(v-1)],1,`${a} × ${b} = ${v}.`);}
   for(let i=1;i<=10;i++){const b= i+1, v=i+2, a=b*v;m(`Solve: ${a} ÷ ${b} = ?`,[String(v-1),String(v),String(v+1)],1,`${a} ÷ ${b} = ${v}.`);}
+  const extraMath = [
+    ["Half of 18 is …",["8","9","10"],1,"Yarim — ikkiga bo‘lish: 18 ÷ 2 = 9."],
+    ["What is 10% of 50?",["5","10","15"],0,"10% — o‘ndan bir qism: 50 ÷ 10 = 5."],
+    ["Which fraction is equal to one half?",["1/3","2/4","3/4"],1,"2/4 qisqartirilsa 1/2 bo‘ladi."],
+    ["What is the perimeter of a square with side 3 cm?",["9 cm","12 cm","6 cm"],1,"Perimetr = 4 × tomon = 4 × 3 = 12 cm."],
+    ["Round 47 to the nearest ten.",["40","50","60"],1,"Birlar xonasi 7, shuning uchun 50 ga yaxlitlanadi."],
+    ["Which number is even?",["13","17","24"],2,"Juft son 2 ga qoldiqsiz bo‘linadi."],
+    ["Solve: 5 + 2 × 3.",["21","11","15"],1,"Avval ko‘paytirish: 2×3=6, so‘ng 5+6=11."],
+    ["How many minutes are in 2 hours?",["60","100","120"],2,"Bir soat 60 daqiqa; 2×60=120."],
+    ["A triangle has how many sides?",["3","4","5"],0,"Uchburchakning 3 tomoni bor."],
+    ["What is 3/4 of 20?",["10","15","18"],1,"20 ÷ 4 = 5; 5 × 3 = 15."]
+  ];
+  extraMath.forEach(x=>math.push(x));
   bank.english = english;
   bank.math = math;
   window.SHIRIN_CURRICULUM = {
