@@ -74,6 +74,9 @@
     });
   });
   const quizData = {
+    sat: { question: "If 3x + 4 = 19, what is x?", options: ["3", "5", "7"], answer: "5", explanation: "3x = 15, so x = 5. Bu original SAT uslubidagi algebra mashqi." },
+    government: { question: "Qonun ustuvorligi nimani anglatadi?", options: ["Qonun hamma uchun teng qo‘llanadi", "Faqat rahbarlar qonunga bo‘ysunadi", "Qonunlar ixtiyoriy"], answer: "Qonun hamma uchun teng qo‘llanadi", explanation: "Qonun ustuvorligi barcha shaxslar va davlat organlari qonunga bo‘ysunishini anglatadi." },
+    economics: { question: "Kasbiy ta’limga sarmoya kiritishning ehtimoliy foydasi qaysi?", options: ["Ish ko‘nikmalarini oshiradi", "Barcha narxlarni avtomatik tushiradi", "Pul taklifini yo‘q qiladi"], answer: "Ish ko‘nikmalarini oshiradi", explanation: "Kasbiy ta’lim kerakli ko‘nikmalarni kuchaytirib, ish topish imkoniyatini oshirishi mumkin." },
     english: { question: "To‘g‘ri javobni tanlang: She ___ a student.", options: ["am", "is", "are"], answer: "is", explanation: "She bilan is ishlatiladi: She is a student." },
     math: { question: "Tenglamani yeching: x + 3 = 7. x nechaga teng?", options: ["3", "4", "10"], answer: "4", explanation: "Har ikki tomondan 3 ni ayiramiz: x = 7 − 3 = 4." }
   };
@@ -254,7 +257,7 @@
     window.speechSynthesis.speak(utterance);
   }
   $("#stopVoice")?.addEventListener("click", () => window.speechSynthesis?.cancel());
-  $("[data-tutor-topic]").forEach((button) => button.addEventListener("click", () => {
+  $$("[data-tutor-topic]").forEach((button) => button.addEventListener("click", () => {
     startTutorLesson(button.dataset.tutorTopic);
   }));
   $("#voiceInput")?.addEventListener("click", () => {
