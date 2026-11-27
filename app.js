@@ -116,12 +116,85 @@
         }).join("");
     });
   }
+  let practiceSession = null;
+  function startFullPractice(subject) {
+    const source = quizData[subject];
+    if (!Array.isArray(source) || !source.length) { toast("Bu fan uchun savollar topilmadi."); return; }
+    const questions = source.slice().sort(() => Math.random() - 0.5);
+    practiceSession = { subject, questions, index: 0, score: 0, answered: false };
+    let modal = document.getElementById("practiceModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "practiceModal";
+      modal.className = "practice-modal";
+      modal.innerHTML = '<section class="practice-dialog" role="dialog" aria-modal="true" aria-labelledby="practiceTitle"><button type="button" class="practice-close" aria-label="Yopish">×</button><div class="practice-kicker">SHIRIN AI • BILIMNI MUSTAHKAMLASH</div><h2 id="practiceTitle">Fan mashqi</h2><div class="practice-progress"><span id="practiceProgressFill"></span></div><div class="practice-meta" id="practiceMeta"></div><h3 id="practiceQuestion"></h3><div id="practiceOptions" class="practice-options"></div><p id="practiceExplanation" class="practice-explanation"></p><button type="button" id="practiceNext" class="primary-btn" disabled>Keyingi savol →</button></section>';
+      document.body.appendChild(modal);
+      modal.querySelector(".practice-close").addEventListener("click", () => { modal.classList.remove("open"); practiceSession = null; });
+      modal.addEventListener("click", (event) => { if (event.target === modal) { modal.classList.remove("open"); practiceSession = null; } });
+      modal.querySelector("#practiceNext").addEventListener("click", () => {
+        if (!practiceSession || !practiceSession.answered) return;
+        practiceSession.index += 1;
+        if (practiceSession.index >= practiceSession.questions.length) {
+          const finished = practiceSession;
+          const previous = (progress.quizScores || {})[finished.subject] || { attempts: 0, correctCount: 0 };
+          const attempts = (previous.attempts || 0) + finished.questions.length;
+          const correctCount = (previous.correctCount || 0) + finished.score;
+          progress.quizScores = progress.quizScores || {};
+          progress.quizScores[finished.subject] = { correct: finished.score === finished.questions.length, answer: finished.score + "/" + finished.questions.length, attempts, correctCount, lastScore: finished.score, lastTotal: finished.questions.length, at: new Date().toISOString() };
+          save();
+          modal.querySelector(".practice-dialog").innerHTML = '<button type="button" class="practice-close" aria-label="Yopish">×</button><div class="practice-kicker">MASHQ YAKUNLANDI</div><h2>Natijang</h2><div class="practice-result">' + finished.score + ' / ' + finished.questions.length + '</div><p class="practice-explanation">To‘g‘ri javoblar: ' + Math.round(finished.score / finished.questions.length * 100) + '%. Xatolarni qayta ko‘rib, yana mashq qil.</p><button type="button" class="primary-btn" id="practiceFinish">Yakunlash</button>';
+          modal.querySelector(".practice-close").addEventListener("click", () => modal.classList.remove("open"));
+          modal.querySelector("#practiceFinish").addEventListener("click", () => modal.classList.remove("open"));
+          return;
+        }
+        renderPracticeQuestion();
+      });
+    }
+    modal.classList.add("open");
+    renderPracticeQuestion();
+  }
+  function renderPracticeQuestion() {
+    const modal = document.getElementById("practiceModal");
+    const session = practiceSession;
+    if (!modal || !session) return;
+    const [question, options, answerIndex, explanation] = session.questions[session.index];
+    modal.querySelector("#practiceTitle").textContent = session.subject === "english" ? "English mashqi" : "Matematika mashqi";
+    modal.querySelector("#practiceMeta").textContent = "Savol " + (session.index + 1) + " / " + session.questions.length + " • To‘g‘ri: " + session.score;
+    modal.querySelector("#practiceProgressFill").style.width = ((session.index) / session.questions.length * 100) + "%";
+    modal.querySelector("#practiceQuestion").textContent = question;
+    modal.querySelector("#practiceExplanation").textContent = "";
+    const choices = modal.querySelector("#practiceOptions");
+    choices.replaceChildren();
+    options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "practice-option";
+      button.textContent = String.fromCharCode(65 + index) + ". " + option;
+      button.addEventListener("click", () => {
+        if (session.answered) return;
+        session.answered = true;
+        const correct = index === answerIndex;
+        if (correct) session.score += 1;
+        Array.from(choices.children).forEach((item, i) => {
+          item.disabled = true;
+          if (i === answerIndex) item.classList.add("is-correct");
+          else if (i === index) item.classList.add("is-wrong");
+        });
+        modal.querySelector("#practiceExplanation").textContent = (correct ? "To‘g‘ri! " : "To‘g‘ri javob: " + options[answerIndex] + ". ") + explanation;
+        modal.querySelector("#practiceNext").disabled = false;
+        modal.querySelector("#practiceNext").textContent = session.index === session.questions.length - 1 ? "Natijani ko‘rish" : "Keyingi savol →";
+        modal.querySelector("#practiceMeta").textContent = "Savol " + (session.index + 1) + " / " + session.questions.length + " • To‘g‘ri: " + session.score;
+      });
+      choices.appendChild(button);
+    });
+    session.answered = false;
+    modal.querySelector("#practiceNext").disabled = true;
+    modal.querySelector("#practiceNext").textContent = "Javobni tanlang";
+  }
+
   document.addEventListener("click", (event) => {
     const practice = event.target.closest(".curriculum-practice");
-    if (practice) {
-      const original = document.querySelector('[data-quiz="' + practice.dataset.subject + '"]');
-      if (original) original.click();
-    }
+    if (practice) startFullPractice(practice.dataset.subject);
     const done = event.target.closest(".curriculum-done");
     if (done) {
       progress.completedLessons = progress.completedLessons || {};
