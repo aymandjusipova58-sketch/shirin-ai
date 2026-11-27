@@ -259,19 +259,44 @@
   }));
   $("#voiceInput")?.addEventListener("click", () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) { toast("Ovozli kiritish bu brauzerda qo‘llanmaydi. Matn yozishingiz mumkin."); return; }
+    if (!window.isSecureContext) {
+      toast("Ovozli kiritish uchun sayt HTTPS orqali ochilishi kerak.");
+      return;
+    }
+    if (!SpeechRecognition) {
+      toast("Bu brauzer ovozli kiritishni qo‘llamaydi. Saytni Chrome brauzerida oching.");
+      return;
+    }
     const recognition = new SpeechRecognition();
     recognition.lang = "uz-UZ";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+    recognition.onstart = () => toast("Mikrofon tinglayapti. Hozir gapiring…");
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
+      const transcript = event.results?.[0]?.[0]?.transcript || "";
+      if (!transcript) { toast("Ovoz aniqlanmadi. Yana urinib ko‘ring."); return; }
       $("#tutorInput").value = transcript;
       $("#tutorInput").focus();
       toast("Ovoz matnga aylantirildi. Yuborish tugmasini bosing.");
     };
-    recognition.onerror = () => toast("Ovoz aniqlanmadi. Qayta urinib ko‘ring yoki matn yozing.");
-    recognition.start();
+    recognition.onnomatch = () => toast("Nutq aniqlanmadi. Sekinroq va aniqroq gapirib ko‘ring.");
+    recognition.onerror = (event) => {
+      const messages = {
+        "not-allowed": "Mikrofon ruxsati bloklangan. Chrome sayt sozlamalaridan mikrofonni yoqing.",
+        "service-not-allowed": "Brauzer ovoz xizmatiga ruxsat bermadi. Chrome orqali qayta urinib ko‘ring.",
+        "audio-capture": "Mikrofon topilmadi yoki boshqa ilova foydalanmoqda.",
+        "network": "Ovoz xizmati tarmoqqa ulana olmadi. Internetni tekshiring.",
+        "language-not-supported": "O‘zbekcha ovoz tanish bu qurilmada qo‘llanmasligi mumkin.",
+        "no-speech": "Ovoz eshitilmadi. Tugmani bosgach darhol gapiring."
+      };
+      toast(messages[event.error] || ("Ovozli kiritish xatosi: " + event.error));
+    };
+    try {
+      recognition.start();
+    } catch (error) {
+      toast("Mikrofonni ishga tushirib bo‘lmadi. Sahifani yangilab, qayta urinib ko‘ring.");
+      console.warn("Speech recognition start error:", error);
+    }
   });
   function appendBubble(message, className) {
     const box = $("#chatMessages");
