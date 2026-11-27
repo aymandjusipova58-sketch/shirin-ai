@@ -170,7 +170,7 @@
     if (route) {
       const lesson = tutorLessons[route.topic];
       tutorTopic = route.topic;
-      tutorStep = 0;
+      tutorStep = 1;
       return "Albatta! " + lesson.title + "\\n\\n" + lesson.intro + "\\n\\n" + lesson.examples + "\\n\\n" + lesson.question;
     }
     return "Savolingni tushunishga harakat qilaman. Hozir men English, matematika, SAT, Government va Political Economy bo‘yicha bosqichli darslar bera olaman. Qaysi mavzuni o‘rganmoqchisan? Masalan: “English — to be” yoki “x + 5 = 9”.";
