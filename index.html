@@ -64,12 +64,12 @@
 
       <section class="view" id="view-english">
         <div class="page-intro"><span class="tag">01 • LANGUAGE</span><h2>English Foundation</h2><p>Ingliz tilini boshlang‘ich darajadan o‘rganamiz. Har bir mavzu: tushuntirish, misol va mashq.</p></div>
-        <article class="lesson-panel"><span class="lesson-label">LESSON 01 • GRAMMAR</span><h3>“To be” fe’li: am / is / are</h3><p>“To be” kimdir yoki nimadir kimligini, qandayligini aytishda ishlatiladi.</p><div class="example-list"><p><b>I am</b> a student. — Men o‘quvchiman.</p><p><b>She is</b> ready. — U tayyor.</p><p><b>They are</b> students. — Ular o‘quvchilar.</p></div><button class="secondary-btn" data-quiz="english">Mavzuni tekshirish →</button></article>
+        <div id="englishCurriculum" class="curriculum-list"></div><article class="lesson-panel"><span class="lesson-label">LESSON 01 • GRAMMAR</span><h3>“To be” fe’li: am / is / are</h3><p>“To be” kimdir yoki nimadir kimligini, qandayligini aytishda ishlatiladi.</p><div class="example-list"><p><b>I am</b> a student. — Men o‘quvchiman.</p><p><b>She is</b> ready. — U tayyor.</p><p><b>They are</b> students. — Ular o‘quvchilar.</p></div><button class="secondary-btn" data-quiz="english">Mavzuni tekshirish →</button></article>
       </section>
 
       <section class="view" id="view-math">
         <div class="page-intro"><span class="tag">02 • LOGIC</span><h2>Mathematics Foundation</h2><p>Algebra asoslaridan boshlaymiz. Shoshilmaymiz: tushunish — tezlikdan muhim.</p></div>
-        <article class="lesson-panel"><span class="lesson-label">LESSON 01 • ALGEBRA</span><h3>O‘zgaruvchi nima?</h3><p>O‘zgaruvchi — qiymati noma’lum yoki o‘zgarishi mumkin bo‘lgan sonni bildiruvchi harf.</p><div class="formula">x + 3 = 7</div><p>Bu tenglamada x ni topish uchun 7 dan 3 ni ayiramiz. Demak, <b>x = 4</b>.</p><button class="secondary-btn" data-quiz="math">Mashqni bajarish →</button></article>
+        <div id="mathCurriculum" class="curriculum-list"></div><article class="lesson-panel"><span class="lesson-label">LESSON 01 • ALGEBRA</span><h3>O‘zgaruvchi nima?</h3><p>O‘zgaruvchi — qiymati noma’lum yoki o‘zgarishi mumkin bo‘lgan sonni bildiruvchi harf.</p><div class="formula">x + 3 = 7</div><p>Bu tenglamada x ni topish uchun 7 dan 3 ni ayiramiz. Demak, <b>x = 4</b>.</p><button class="secondary-btn" data-quiz="math">Mashqni bajarish →</button></article>
       </section>
 
       <section class="view" id="view-sat">
@@ -107,6 +107,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="./config.js"></script>
   <script src="./question-bank.js"></script>
+  <script src="./curriculum.js"></script>
   <script src="./app.js" defer></script>
 </body>
 </html>
