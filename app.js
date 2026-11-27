@@ -143,8 +143,8 @@
           progress.quizScores[finished.subject] = { correct: finished.score === finished.questions.length, answer: finished.score + "/" + finished.questions.length, attempts, correctCount, lastScore: finished.score, lastTotal: finished.questions.length, at: new Date().toISOString() };
           save();
           modal.querySelector(".practice-dialog").innerHTML = '<button type="button" class="practice-close" aria-label="Yopish">×</button><div class="practice-kicker">MASHQ YAKUNLANDI</div><h2>Natijang</h2><div class="practice-result">' + finished.score + ' / ' + finished.questions.length + '</div><p class="practice-explanation">To‘g‘ri javoblar: ' + Math.round(finished.score / finished.questions.length * 100) + '%. Xatolarni qayta ko‘rib, yana mashq qil.</p><button type="button" class="primary-btn" id="practiceFinish">Yakunlash</button>';
-          modal.querySelector(".practice-close").addEventListener("click", () => modal.classList.remove("open"));
-          modal.querySelector("#practiceFinish").addEventListener("click", () => modal.classList.remove("open"));
+          modal.querySelector(".practice-close").addEventListener("click", () => { modal.remove(); practiceSession = null; });
+          modal.querySelector("#practiceFinish").addEventListener("click", () => { modal.remove(); practiceSession = null; });
           return;
         }
         renderPracticeQuestion();
