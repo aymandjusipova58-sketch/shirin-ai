@@ -63,7 +63,7 @@ Create a dedicated Supabase project named `shirin-ai`, then:
 3. Add server-side Edge Function secrets:
    - `GEMINI_API_KEY` — your Gemini API key (secret; never commit it).
    - `SHIRIN_ALLOWED_ORIGIN` — the exact HTTPS origin where Shirin AI is hosted.
-   - `GEMINI_MODEL` — optional model override; default is `gemini-2.5-flash`.
+   - `GEMINI_MODEL` — optional model override; default is `gemini-2.5-flash-lite`.
 4. Copy the project's URL and legacy anon public key into `config.js`.
    The anon key is public; never use a service-role key in the app.
 5. Test anonymous sign-in and send a short tutor question. Confirm the function responds successfully.
@@ -81,4 +81,4 @@ No learner chat history is saved to a database by this preview.
 - [ ] Configure `config.js` with project URL and anon key
 - [ ] Verify a real AI tutor response end-to-end
 
-**Cost note:** Gemini and Supabase usage may be subject to provider quotas, limits, or charges. Check current pricing and quotas before enabling public access.
+**Cost note:** Gemini and Supabase usage may be subject to provider quotas, limits, or charges. The free tier has request limits and Google may use submitted content to improve its products. Do not send passwords, private documents, sensitive personal information, or confidential school records. Check current quotas before enabling access.
