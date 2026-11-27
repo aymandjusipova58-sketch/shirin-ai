@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b2b">
+  <meta name="description" content="Shirin AI — English, Mathematics, SAT va Government ta’lim yordamchisi.">
+  <title>Shirin AI — O‘rgan. Rivojlan. Maqsadingga yet.</title>
+  <link rel="icon" href="./assets/shirin-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#home" aria-label="Shirin AI bosh sahifa">
+        <span class="brand-mark">S</span><span><b>SHIRIN AI</b><small>LEARN • GROW • LEAD</small></span>
+      </a>
+      <div class="profile-mini"><div class="avatar">S</div><div><b>Shaxsiy ta’lim</b><small>Harvard maqsadi</small></div></div>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a class="nav-link active" href="#home" data-view="home"><span>⌂</span> Bosh sahifa</a>
+        <a class="nav-link" href="#english" data-view="english"><span>文</span> Ingliz tili</a>
+        <a class="nav-link" href="#math" data-view="math"><span>∑</span> Matematika</a>
+        <a class="nav-link" href="#sat" data-view="sat"><span>✦</span> SAT tayyorgarlik</a>
+        <a class="nav-link" href="#government" data-view="government"><span>⚖</span> Government</a>
+        <a class="nav-link" href="#economics" data-view="economics"><span>↗</span> Political Economy</a>
+        <a class="nav-link" href="#tutor" data-view="tutor"><span>✧</span> AI Ustoz</a>
+        <a class="nav-link" href="#progress" data-view="progress"><span>▥</span> Natijalar</a>
+      </nav>
+      <div class="sidebar-note"><span class="spark">✦</span><b>Katta maqsadlar</b><p>Har kuni ozgina bilim — katta kelajak sari qadam.</p></div>
+      <small class="version">SHIRIN AI • PREVIEW 0.1</small>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menyuni ochish">☰</button>
+        <div><span class="eyebrow">SHAXSIY TA’LIM MAYDONI</span><h1 id="pageTitle">Xush kelibsiz!</h1></div>
+        <div class="top-actions"><span class="date-pill" id="todayLabel"></span><span class="top-avatar">S</span></div>
+      </header>
+
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="hero-copy"><span class="tag">✦ SENING KELAJAGING BUGUNDAN BOSHLANADI</span>
+            <h2>Bilim bilan <em>chegaralarni</em> zabt et.</h2>
+            <p>Shaxsiy o‘quv rejang, kundalik mashqlar va SAT tayyorgarligi — barchasi bir joyda.</p>
+            <a class="primary-btn" href="#english" data-view="english">Bugungi darsni boshlash <span>→</span></a>
+          </div>
+          <div class="hero-art" aria-label="Shirin AI ta’lim ramzi"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="book">✦<b>SHIRIN</b><small>YOUR NEXT CHAPTER</small></div><span class="cap">◆</span><span class="star star-a">✦</span><span class="star star-b">✧</span></div>
+        </div>
+        <div class="goal-strip"><div><small>ASOSIY MAQSAD</small><b>Harvard University</b></div><div class="goal-line"></div><div><small>AKADEMIK YO‘NALISH</small><b>Government + Political Economy</b></div><div class="goal-badge">2028 TARGET</div></div>
+        <div class="section-heading"><div><span class="eyebrow">BUGUNGI REJA</span><h2>O‘sish uchun 3 qadam</h2></div><span class="muted" id="completedLabel">0 / 3 bajarildi</span></div>
+        <div class="task-grid">
+          <article class="task-card"><div class="task-icon violet">文</div><div><b>English Foundation</b><p>Yangi so‘zlar va grammatika</p></div><label class="task-check"><input type="checkbox" data-task="english"><span></span></label></article>
+          <article class="task-card"><div class="task-icon blue">∑</div><div><b>Mathematics</b><p>Algebra asoslarini mustahkamlash</p></div><label class="task-check"><input type="checkbox" data-task="math"><span></span></label></article>
+          <article class="task-card"><div class="task-icon gold">✦</div><div><b>Critical Thinking</b><p>Bir ijtimoiy muammoni tahlil qilish</p></div><label class="task-check"><input type="checkbox" data-task="thinking"><span></span></label></article>
+        </div>
+        <div class="section-heading"><div><span class="eyebrow">O‘QUV YO‘NALISHLARI</span><h2>O‘rganishni davom ettir</h2></div></div>
+        <div class="course-grid">
+          <a class="course-card course-english" href="#english" data-view="english"><span>文</span><small>01 • LANGUAGE</small><b>English Foundation</b><p>Ingliz tilini bosqichma-bosqich o‘rgan.</p><strong>Boshlash →</strong></a>
+          <a class="course-card course-math" href="#math" data-view="math"><span>∑</span><small>02 • LOGIC</small><b>Mathematics</b><p>Matematik poydevoringni yarat.</p><strong>Boshlash →</strong></a>
+          <a class="course-card course-sat" href="#sat" data-view="sat"><span>✦</span><small>03 • ADMISSION</small><b>SAT Preparation</b><p>Reading & Writing va Math.</p><strong>Boshlash →</strong></a>
+        </div>
+      </section>
+
+      <section class="view" id="view-english">
+        <div class="page-intro"><span class="tag">01 • LANGUAGE</span><h2>English Foundation</h2><p>Ingliz tilini boshlang‘ich darajadan o‘rganamiz. Har bir mavzu: tushuntirish, misol va mashq.</p></div>
+        <article class="lesson-panel"><span class="lesson-label">LESSON 01 • GRAMMAR</span><h3>“To be” fe’li: am / is / are</h3><p>“To be” kimdir yoki nimadir kimligini, qandayligini aytishda ishlatiladi.</p><div class="example-list"><p><b>I am</b> a student. — Men o‘quvchiman.</p><p><b>She is</b> ready. — U tayyor.</p><p><b>They are</b> students. — Ular o‘quvchilar.</p></div><button class="secondary-btn" data-quiz="english">Mavzuni tekshirish →</button></article>
+      </section>
+
+      <section class="view" id="view-math">
+        <div class="page-intro"><span class="tag">02 • LOGIC</span><h2>Mathematics Foundation</h2><p>Algebra asoslaridan boshlaymiz. Shoshilmaymiz: tushunish — tezlikdan muhim.</p></div>
+        <article class="lesson-panel"><span class="lesson-label">LESSON 01 • ALGEBRA</span><h3>O‘zgaruvchi nima?</h3><p>O‘zgaruvchi — qiymati noma’lum yoki o‘zgarishi mumkin bo‘lgan sonni bildiruvchi harf.</p><div class="formula">x + 3 = 7</div><p>Bu tenglamada x ni topish uchun 7 dan 3 ni ayiramiz. Demak, <b>x = 4</b>.</p><button class="secondary-btn" data-quiz="math">Mashqni bajarish →</button></article>
+      </section>
+
+      <section class="view" id="view-sat">
+        <div class="page-intro"><span class="tag">03 • ADMISSION</span><h2>SAT Preparation</h2><p>SAT ikki asosiy bo‘limdan iborat: Reading and Writing hamda Math. Avval bilim poydevorini, keyin imtihon strategiyasini kuchaytiramiz.</p></div>
+        <div class="info-grid"><article class="info-card"><span class="task-icon violet">文</span><h3>Reading & Writing</h3><p>Matnni tushunish, dalillar, grammatika va tahrirlash.</p></article><article class="info-card"><span class="task-icon blue">∑</span><h3>Math</h3><p>Algebra, Advanced Math, Problem-Solving va Geometry.</p></article></div>
+        <article class="lesson-panel"><span class="lesson-label">TAYYORGARLIK BOSQICHI</span><h3>Avval diagnostika</h3><p>Hozircha bu bo‘lim o‘quv rejasidir. Rasmiy SAT sinovi va ball baholash keyingi bosqichda qo‘shiladi.</p><a class="text-link" href="https://satsuite.collegeboard.org/sat" target="_blank" rel="noopener noreferrer">College Board rasmiy SAT ma’lumoti ↗</a></article>
+      </section>
+
+      <section class="view" id="view-government">
+        <div class="page-intro"><span class="tag">04 • PUBLIC LEADERSHIP</span><h2>Government & Politics</h2><p>Davlat qanday ishlaydi? Qonunlar, davlat institutlari va ommaviy siyosatni o‘rganamiz.</p></div>
+        <div class="topic-grid"><article class="info-card"><h3>Davlat institutlari</h3><p>Hokimiyat tarmoqlari va davlat tashkilotlari.</p></article><article class="info-card"><h3>Ommaviy siyosat</h3><p>Jamiyat muammolari uchun dalillarga asoslangan yechimlar.</p></article><article class="info-card"><h3>Huquq va adolat</h3><p>Qonun ustuvorligi, tenglik va fuqarolik huquqlari.</p></article></div>
+      </section>
+
+      <section class="view" id="view-economics">
+        <div class="page-intro"><span class="tag">05 • SOCIAL SCIENCE</span><h2>Political Economy</h2><p>Iqtisodiy qarorlar, siyosat va odamlar hayoti o‘rtasidagi bog‘liqlikni o‘rganamiz.</p></div>
+        <div class="topic-grid"><article class="info-card"><h3>Kambag‘allik</h3><p>Sabablar, o‘lchash usullari va uzoq muddatli yechimlar.</p></article><article class="info-card"><h3>Davlat budjeti</h3><p>Daromadlar, xarajatlar va ustuvorliklar.</p></article><article class="info-card"><h3>Ish haqi va tengsizlik</h3><p>Mehnat bozori va daromadlar taqsimoti.</p></article></div>
+      </section>
+
+      <section class="view" id="view-tutor">
+        <div class="page-intro"><span class="tag">06 • PERSONAL GUIDE</span><h2>AI Ustoz</h2><p>Savolingni yoz. Hozirgi sinov versiyasi tayyor mavzular bo‘yicha yo‘l ko‘rsatadi; haqiqiy AI javoblari server ulanishi sozlangandan keyin ishlaydi.</p></div>
+        <article class="chat-panel"><div class="chat-head"><div class="tutor-avatar">✧</div><div><b>Shirin AI Ustoz</b><small><span class="status-dot"></span> O‘quv rejimi • Preview</small></div></div><div class="chat-messages" id="chatMessages"><div class="bubble tutor-bubble">Assalomu alaykum! Bugun nimani o‘rganamiz? English, matematika yoki SAT haqida so‘rashing mumkin.</div></div><form id="tutorForm" class="chat-form"><input id="tutorInput" type="text" placeholder="Savolingizni yozing..." autocomplete="off" aria-label="AI Ustozga savol"><button type="submit" aria-label="Yuborish">↑</button></form><small class="chat-disclaimer">Bu demo javoblar cheklangan. AI xizmatiga ulanish hali sozlanmagan.</small></article>
+      </section>
+
+      <section class="view" id="view-progress">
+        <div class="page-intro"><span class="tag">07 • YOUR JOURNEY</span><h2>O‘quv natijalari</h2><p>Bugungi vazifalaring bajarilishini kuzat. Bu qurilmadagi demo ko‘rsatkichlar.</p></div>
+        <article class="lesson-panel"><h3>Bugungi vazifalar</h3><div id="progressTasks"></div><div class="progress-track"><span id="progressBar"></span></div><b id="progressText">0% bajarildi</b></article>
+      </section>
+
+      <footer class="footer"><span>SHIRIN AI</span><span>Bilim • Intizom • Adolat</span><span>Preview 0.1</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
