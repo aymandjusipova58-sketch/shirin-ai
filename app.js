@@ -79,26 +79,25 @@
       toast(input.checked ? "Vazifa bajarildi. Barakalla!" : "Vazifa qayta rejalashtirildi.");
     });
   });
-  const quizData = {
-    sat: { question: "If 3x + 4 = 19, what is x?", options: ["3", "5", "7"], answer: "5", explanation: "3x = 15, so x = 5. Bu original SAT uslubidagi algebra mashqi." },
-    government: { question: "Qonun ustuvorligi nimani anglatadi?", options: ["Qonun hamma uchun teng qo‘llanadi", "Faqat rahbarlar qonunga bo‘ysunadi", "Qonunlar ixtiyoriy"], answer: "Qonun hamma uchun teng qo‘llanadi", explanation: "Qonun ustuvorligi barcha shaxslar va davlat organlari qonunga bo‘ysunishini anglatadi." },
-    economics: { question: "Kasbiy ta’limga sarmoya kiritishning ehtimoliy foydasi qaysi?", options: ["Ish ko‘nikmalarini oshiradi", "Barcha narxlarni avtomatik tushiradi", "Pul taklifini yo‘q qiladi"], answer: "Ish ko‘nikmalarini oshiradi", explanation: "Kasbiy ta’lim kerakli ko‘nikmalarni kuchaytirib, ish topish imkoniyatini oshirishi mumkin." },
-    english: { question: "To‘g‘ri javobni tanlang: She ___ a student.", options: ["am", "is", "are"], answer: "is", explanation: "She bilan is ishlatiladi: She is a student." },
-    math: { question: "Tenglamani yeching: x + 3 = 7. x nechaga teng?", options: ["3", "4", "10"], answer: "4", explanation: "Har ikki tomondan 3 ni ayiramiz: x = 7 − 3 = 4." }
-  };
+  const quizData = window.SHIRIN_QUESTION_BANK || {};
   $$("[data-quiz]").forEach((button) => {
     button.addEventListener("click", () => {
-      const quiz = quizData[button.dataset.quiz];
-      if (!quiz) return;
-      const choice = window.prompt(quiz.question + "\n\nA) " + quiz.options[0] + "\nB) " + quiz.options[1] + "\nC) " + quiz.options[2] + "\n\nJavob sifatida A, B yoki C yozing.");
+      const bank = quizData[button.dataset.quiz];
+      if (!Array.isArray(bank) || !bank.length) { toast("Bu fan uchun savollar topilmadi."); return; }
+      const quiz = bank[Math.floor(Math.random() * bank.length)];
+      const [question, options, answerIndex, explanation] = quiz;
+      const choice = window.prompt(question + "\\n\\nA) " + options[0] + "\\nB) " + options[1] + "\\nC) " + options[2] + "\\n\\nA, B yoki C javobini yozing.");
       if (choice === null) return;
       const index = ({ A: 0, B: 1, C: 2 })[choice.trim().toUpperCase()];
       if (index === undefined) { toast("A, B yoki C javobidan birini kiriting."); return; }
-      const correct = quiz.options[index] === quiz.answer;
+      const correct = index === answerIndex;
       progress.quizScores = progress.quizScores || {};
-      progress.quizScores[button.dataset.quiz] = { correct, answer: quiz.answer, at: new Date().toISOString() };
+      const previous = progress.quizScores[button.dataset.quiz] || { attempts: 0, correctCount: 0 };
+      const attempts = (previous.attempts || 0) + 1;
+      const correctCount = (previous.correctCount || 0) + (correct ? 1 : 0);
+      progress.quizScores[button.dataset.quiz] = { correct, answer: options[answerIndex], attempts, correctCount, at: new Date().toISOString() };
       save();
-      toast((correct ? "To‘g‘ri! " : "Hali to‘g‘ri emas. ") + quiz.explanation);
+      toast((correct ? "To‘g‘ri! " : "To‘g‘ri javob: " + options[answerIndex] + ". ") + explanation + " (" + correctCount + "/" + attempts + " to‘g‘ri)");
     });
   });
   const tutorHistory = [];
