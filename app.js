@@ -53,8 +53,14 @@
     const text = $("#progressText");
     if (text) text.textContent = Math.round(done / keys.length * 100) + "% bajarildi";
     const list = $("#progressTasks");
-    if (list) list.innerHTML = keys.map((key) => '<div class="progress-item">' +
-      (progress[key] ? "✓ " : "○ ") + taskNames[key] + "</div>").join("");
+    if (list) {
+      const tasks = keys.map((key) => '<div class="progress-item">' + (progress[key] ? "✓ " : "○ ") + taskNames[key] + "</div>").join("");
+      const scores = progress.quizScores || {};
+      const quizRows = Object.entries(scores).map(([key, result]) => '<div class="progress-item">' +
+        (result.correct ? "✓ " : "↻ ") + ({ english: "English", math: "Math", sat: "SAT", government: "Government", economics: "Political Economy" }[key] || key) +
+        " — " + (result.correct ? "to‘g‘ri" : "qayta mashq") + "</div>").join("");
+      list.innerHTML = tasks + (quizRows ? '<div class="progress-subtitle">FAN MASHQLARI</div>' + quizRows : "");
+    }
     $$("[data-task]").forEach((input) => { input.checked = progress[input.dataset.task] === true; });
   }
   $$(".nav-link, [data-view]").forEach((link) => {
@@ -89,6 +95,9 @@
       const index = ({ A: 0, B: 1, C: 2 })[choice.trim().toUpperCase()];
       if (index === undefined) { toast("A, B yoki C javobidan birini kiriting."); return; }
       const correct = quiz.options[index] === quiz.answer;
+      progress.quizScores = progress.quizScores || {};
+      progress.quizScores[button.dataset.quiz] = { correct, answer: quiz.answer, at: new Date().toISOString() };
+      save();
       toast((correct ? "To‘g‘ri! " : "Hali to‘g‘ri emas. ") + quiz.explanation);
     });
   });
