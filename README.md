@@ -47,3 +47,38 @@ A personalized learning companion for an 11th-grade student preparing for univer
 
 ## Important admissions note
 Admission requirements and testing policies can change. Verify the official university requirements for the intended application year before making application decisions. SAT preparation does not replace strong school performance, English proficiency, meaningful activities, and a complete application.
+
+
+## Secure AI tutor backend (next-stage setup)
+
+The tutor Edge Function is prepared at `supabase/functions/shirin-tutor/index.ts`.
+It calls Gemini from the server. The provider key is never placed in browser code.
+
+### Required separate Supabase project
+Do not reuse credentials or databases from Alien AI Trucker or Alien Sentinel.
+Create a dedicated Supabase project named `shirin-ai`, then:
+
+1. Enable **Anonymous Sign-Ins** in Supabase Authentication settings.
+2. Deploy the Edge Function named `shirin-tutor` with JWT verification enabled.
+3. Add server-side Edge Function secrets:
+   - `GEMINI_API_KEY` — your Gemini API key (secret; never commit it).
+   - `SHIRIN_ALLOWED_ORIGIN` — the exact HTTPS origin where Shirin AI is hosted.
+   - `GEMINI_MODEL` — optional model override; default is `gemini-2.5-flash`.
+4. Copy the project's URL and legacy anon public key into `config.js`.
+   The anon key is public; never use a service-role key in the app.
+5. Test anonymous sign-in and send a short tutor question. Confirm the function responds successfully.
+
+The frontend keeps the temporary access token in session storage for the current browser tab.
+No learner chat history is saved to a database by this preview.
+
+### Current integration status
+- [x] Secure server-side Gemini request handler written
+- [x] Request size validation and bounded conversation context
+- [x] Server-only AI key handling
+- [x] Frontend prepared for Supabase anonymous session + Edge Function
+- [ ] Create a dedicated Shirin AI Supabase project
+- [ ] Add secrets and deploy the Edge Function
+- [ ] Configure `config.js` with project URL and anon key
+- [ ] Verify a real AI tutor response end-to-end
+
+**Cost note:** Gemini and Supabase usage may be subject to provider quotas, limits, or charges. Check current pricing and quotas before enabling public access.
