@@ -1,0 +1,12 @@
+{
+  "name": "Shirin AI",
+  "short_name": "Shirin AI",
+  "description": "Shaxsiy ta’lim va SAT tayyorgarlik yordamchisi",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#100b2b",
+  "theme_color": "#100b2b",
+  "icons": [
+    { "src": "./assets/shirin-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
