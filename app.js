@@ -31,6 +31,7 @@
     try { localStorage.setItem(storageKey, JSON.stringify(progress)); }
     catch { toast("Brauzer xotirasiga saqlab bo‘lmadi."); }
     renderProgress();
+    syncProgressToCloud();
   };
   function showView(name) {
     const view = views.includes(name) ? name : "home";
@@ -98,48 +99,53 @@
   ];
   const tutorHistory = [];
   const config = window.SHIRIN_CONFIG || {};
-  let accessToken = "";
-  async function getAnonymousSession() {
-    if (accessToken) return accessToken;
+  let firebaseReady = false;
+  let cloudUser = null;
+  let cloudDb = null;
+  async function initializeCloud() {
+    if (!config.firebaseConfig || !config.firebaseConfig.apiKey || !window.firebase) return;
     try {
-      const cachedToken = sessionStorage.getItem("shirin-ai-session-token");
-      if (cachedToken) { accessToken = cachedToken; return accessToken; }
-    } catch { /* Private browsing may disable session storage; continue with a new session. */ }
-    if (!config.supabaseUrl || !config.supabaseAnonKey) return "";
-    const response = await fetch(config.supabaseUrl.replace(/\/+$/, "") + "/auth/v1/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "apikey": config.supabaseAnonKey },
-      body: JSON.stringify({ data: { app: "shirin-ai" } })
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.access_token) throw new Error("Anonim kirish yoqilmagan yoki Supabase sozlamasi noto‘g‘ri.");
-    accessToken = data.access_token;
-    try { sessionStorage.setItem("shirin-ai-session-token", accessToken); } catch { /* Keep token in memory for this tab only. */ }
-    return accessToken;
+      if (!window.firebase.apps.length) window.firebase.initializeApp(config.firebaseConfig);
+      const auth = window.firebase.auth();
+      cloudDb = window.firebase.firestore();
+      const credential = await auth.signInAnonymously();
+      cloudUser = credential.user;
+      firebaseReady = true;
+      const snapshot = await cloudDb.collection("learners").doc(cloudUser.uid).get();
+      if (snapshot.exists && snapshot.data().progress) {
+        progress = { ...progress, ...snapshot.data().progress };
+        try { localStorage.setItem(storageKey, JSON.stringify(progress)); } catch {}
+        renderProgress();
+      }
+      toast("Shirin-AI bulut xotirasiga ulandi.");
+    } catch (error) {
+      console.warn("Firebase ulanishi hozircha mavjud emas:", error);
+    }
+  }
+  async function syncProgressToCloud() {
+    if (!firebaseReady || !cloudUser || !cloudDb) return;
+    try {
+      await cloudDb.collection("learners").doc(cloudUser.uid).set({
+        progress, updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch (error) {
+      console.warn("Bulutga saqlash amalga oshmadi:", error);
+    }
   }
   async function askTutor(message) {
-    const endpointReady = Boolean(config.supabaseUrl && config.supabaseAnonKey && config.tutorFunctionName);
-    if (endpointReady) {
-      const token = await getAnonymousSession();
-      const response = await fetch(
-        config.supabaseUrl.replace(/\/+$/, "") + "/functions/v1/" + encodeURIComponent(config.tutorFunctionName),
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": config.supabaseAnonKey,
-            "Authorization": "Bearer " + token
-          },
-          body: JSON.stringify({ message, history: tutorHistory.slice(-8) })
-        }
-      );
+    if (config.tutorEndpoint) {
+      const response = await fetch(config.tutorEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, history: tutorHistory.slice(-8) })
+      });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "AI xizmatidan javob kelmadi.");
+      if (!response.ok || !data.answer) throw new Error(data.error || "AI xizmatidan javob kelmadi.");
       return data.answer;
     }
     const lower = message.toLowerCase();
     const match = tutorReplies.find((item) => item.terms.some((term) => lower.includes(term)));
-    return match ? match.reply : "Bu savol uchun hozircha tayyor demo javobim yo‘q. Haqiqiy AI Ustozni ulash uchun alohida Supabase loyihasi va serverdagi AI kaliti kerak bo‘ladi.";
+    return match ? match.reply : "Hozircha demo rejimidaman. Haqiqiy AI Ustoz serveri ulangach, savollaringizga kengroq javob beraman.";
   }
   $("#tutorForm")?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -175,4 +181,5 @@
   $("#todayLabel").textContent = new Intl.DateTimeFormat("uz-UZ", { day: "numeric", month: "short", year: "numeric" }).format(new Date());
   renderProgress();
   showView((location.hash || "#home").slice(1));
+  initializeCloud();
 })();
