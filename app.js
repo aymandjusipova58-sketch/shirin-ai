@@ -101,11 +101,10 @@
   let accessToken = "";
   async function getAnonymousSession() {
     if (accessToken) return accessToken;
-    const cached = safeRead();
-    if (typeof cached.authToken === "string" && cached.authToken) {
-      accessToken = cached.authToken;
-      return accessToken;
-    }
+    try {
+      const cachedToken = sessionStorage.getItem("shirin-ai-session-token");
+      if (cachedToken) { accessToken = cachedToken; return accessToken; }
+    } catch { /* Private browsing may disable session storage; continue with a new session. */ }
     if (!config.supabaseUrl || !config.supabaseAnonKey) return "";
     const response = await fetch(config.supabaseUrl.replace(/\\/$/, "") + "/auth/v1/signup", {
       method: "POST",
@@ -115,8 +114,7 @@
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.access_token) throw new Error("Anonim kirish yoqilmagan yoki Supabase sozlamasi noto‘g‘ri.");
     accessToken = data.access_token;
-    progress.authToken = accessToken;
-    save();
+    try { sessionStorage.setItem("shirin-ai-session-token", accessToken); } catch { /* Keep token in memory for this tab only. */ }
     return accessToken;
   }
   async function askTutor(message) {
