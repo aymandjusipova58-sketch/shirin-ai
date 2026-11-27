@@ -100,6 +100,38 @@
       toast((correct ? "To‘g‘ri! " : "To‘g‘ri javob: " + options[answerIndex] + ". ") + explanation + " (" + correctCount + "/" + attempts + " to‘g‘ri)");
     });
   });
+
+  function renderCurriculum() {
+    const curriculum = window.SHIRIN_CURRICULUM || {};
+    [["english", "englishCurriculum"], ["math", "mathCurriculum"]].forEach(([subject, targetId]) => {
+      const target = document.getElementById(targetId);
+      if (!target || !Array.isArray(curriculum[subject])) return;
+      target.innerHTML = '<div class="curriculum-heading"><span class="lesson-label">KUNLIK DARS REJASI</span><b>20 daqiqa dars + 10 daqiqa uyga vazifa</b><small>Har mavzuda tushuntirish, takrorlash, bilim o‘yini va 50 ta mashq.</small></div>' +
+        curriculum[subject].map((lesson, index) => {
+          const key = subject + "-" + index;
+          const done = progress.completedLessons && progress.completedLessons[key];
+          return '<details class="curriculum-card"><summary><span class="curriculum-number">' + (index + 1) + '</span><span><b>' + lesson.title + '</b><small>' + lesson.time + (done ? ' • Bajarildi ✓' : '') + '</small></span><span class="curriculum-chevron">＋</span></summary>' +
+            '<div class="curriculum-body"><h4>📘 20 daqiqalik dars</h4><p>' + lesson.lesson + '</p><h4>📝 10 daqiqalik uyga vazifa</h4><p>' + lesson.homework + '</p><h4>🔁 Takrorlash</h4><p>' + lesson.review + '</p><h4>🎮 Bilimni mustahkamlash o‘yini</h4><p>' + lesson.game + '</p>' +
+            '<div class="curriculum-actions"><button type="button" class="secondary-btn curriculum-practice" data-subject="' + subject + '">50 ta mashqni boshlash</button><button type="button" class="secondary-btn curriculum-done" data-lesson="' + key + '">Darsni tugatdim ✓</button></div></div></details>';
+        }).join("");
+    });
+  }
+  document.addEventListener("click", (event) => {
+    const practice = event.target.closest(".curriculum-practice");
+    if (practice) {
+      const original = document.querySelector('[data-quiz="' + practice.dataset.subject + '"]');
+      if (original) original.click();
+    }
+    const done = event.target.closest(".curriculum-done");
+    if (done) {
+      progress.completedLessons = progress.completedLessons || {};
+      progress.completedLessons[done.dataset.lesson] = true;
+      save();
+      renderCurriculum();
+      toast("Dars bajarildi. Barakalla!");
+    }
+  });
+
   const tutorHistory = [];
   let tutorStep = 0;
   let tutorTopic = "english";
@@ -320,6 +352,7 @@
   }
   $("#todayLabel").textContent = new Intl.DateTimeFormat("uz-UZ", { day: "numeric", month: "short", year: "numeric" }).format(new Date());
   renderProgress();
+  renderCurriculum();
   showView((location.hash || "#home").slice(1));
   initializeCloud();
 })();
