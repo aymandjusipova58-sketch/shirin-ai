@@ -4,8 +4,8 @@
   "description": "Shaxsiy ta’lim va SAT tayyorgarlik yordamchisi",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#100b2b",
-  "theme_color": "#100b2b",
+  "background_color": "#17134a",
+  "theme_color": "#17134a",
   "icons": [
     { "src": "./assets/shirin-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
