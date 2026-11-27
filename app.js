@@ -98,7 +98,7 @@
       intro: "“To be” fe’li “bo‘lmoq” ma’nosini beradi. Hozirgi zamonda uch shakli bor: am, is, are. I bilan am; he, she, it bilan is; you, we, they bilan are ishlatiladi.",
       examples: "Misollar:\n• I am a student. — Men o‘quvchiman.\n• She is happy. — U xursand.\n• We are ready. — Biz tayyormiz.",
       question: "Endi sen urinib ko‘r: “We ___ students.” Bo‘sh joyga am, is yoki are dan qaysi biri mos?",
-      answers: ["are"],
+      answers: ["are", "we are", "we are students"],
       explain: "To‘g‘ri javob — are. We bilan are ishlatiladi: We are students."
     },
     math: {
